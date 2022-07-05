@@ -9,3 +9,4 @@ variable "opensearch_dashboard_pw" {
   type        = string
   default     = "AWSDemo123!"
 }
+

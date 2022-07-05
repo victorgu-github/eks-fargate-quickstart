@@ -37,7 +37,7 @@ locals {
 
   vpc_cidr = "10.0.0.0/16"
   
-  #azs      = slice(data.aws_availability_zones.available.names, 0, 2)
+  
   azs  = data.aws_availability_zones.available.names
   
   tags = {
@@ -54,13 +54,41 @@ locals {
     add_on_application = true
   }
   
+  kubeconfig = yamlencode({
+    apiVersion      = "v1"
+    kind            = "Config"
+    current-context = "terraform"
+    clusters = [{
+      name = module.eks_blueprints.eks_cluster_id
+      cluster = {
+        certificate-authority-data = module.eks_blueprints.eks_cluster_certificate_authority_data
+        server                     = module.eks_blueprints.eks_cluster_endpoint
+      }
+    }]
+    contexts = [{
+      name = "terraform"
+      context = {
+        cluster = module.eks_blueprints.eks_cluster_id
+        user    = "terraform"
+      }
+    }]
+    users = [{
+      name = "terraform"
+      user = {
+        token = data.aws_eks_cluster_auth.this.token
+      }
+    }]
+  })
+  
 }
+
+
 
 #---------------------------------------------------------------
 # EKS Blueprints
 #---------------------------------------------------------------
 module "eks_blueprints" {
-  source = "../../terraform-aws-eks-blueprints"
+  source = "../terraform-aws-eks-blueprints"
 
   cluster_name    = local.name
   cluster_version = "1.22"
@@ -131,7 +159,7 @@ module "eks_blueprints" {
 }
 
 module "eks_blueprints_kubernetes_addons" {
-  source = "../../terraform-aws-eks-blueprints/modules/kubernetes-addons"
+  source = "../terraform-aws-eks-blueprints/modules/kubernetes-addons"
 
   eks_cluster_id       = module.eks_blueprints.eks_cluster_id
   eks_cluster_endpoint = module.eks_blueprints.eks_cluster_endpoint
@@ -197,33 +225,6 @@ data "aws_eks_cluster_auth" "this" {
   name = module.eks_blueprints.eks_cluster_id
 }
 
-locals {
-  kubeconfig = yamlencode({
-    apiVersion      = "v1"
-    kind            = "Config"
-    current-context = "terraform"
-    clusters = [{
-      name = module.eks_blueprints.eks_cluster_id
-      cluster = {
-        certificate-authority-data = module.eks_blueprints.eks_cluster_certificate_authority_data
-        server                     = module.eks_blueprints.eks_cluster_endpoint
-      }
-    }]
-    contexts = [{
-      name = "terraform"
-      context = {
-        cluster = module.eks_blueprints.eks_cluster_id
-        user    = "terraform"
-      }
-    }]
-    users = [{
-      name = "terraform"
-      user = {
-        token = data.aws_eks_cluster_auth.this.token
-      }
-    }]
-  })
-}
 
 # Separate resource so that this is only ever executed once
 resource "null_resource" "remove_default_coredns_deployment" {
@@ -241,6 +242,7 @@ resource "null_resource" "remove_default_coredns_deployment" {
       kubectl --namespace kube-system delete deployment coredns --kubeconfig <(echo $KUBECONFIG | base64 --decode)
     EOT
   }
+  
 }
 
 resource "null_resource" "modify_kube_dns" {
