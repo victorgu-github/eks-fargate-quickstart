@@ -33,12 +33,13 @@ data "aws_availability_zones" "available" {}
 
 locals {
   name   = "aws007-preprod-test-eks"
-  region = "us-west-1"
+  region = "us-east-2"
 
   vpc_cidr = "10.0.0.0/16"
   
-  azs      = slice(data.aws_availability_zones.available.names, 0, 3)
-
+  #azs      = slice(data.aws_availability_zones.available.names, 0, 2)
+  azs  = data.aws_availability_zones.available.names
+  
   tags = {
     Blueprint  = local.name
     GithubRepo = "eks-fargate-quickstart"
@@ -67,8 +68,6 @@ module "eks_blueprints" {
   vpc_id             = module.vpc.vpc_id
   private_subnet_ids = module.vpc.private_subnets
 
-  # https://github.com/aws-ia/terraform-aws-eks-blueprints/issues/485
-  # https://github.com/aws-ia/terraform-aws-eks-blueprints/issues/494
   cluster_kms_key_additional_admin_arns = [data.aws_caller_identity.current.arn]
 
   fargate_profiles = {
@@ -113,8 +112,8 @@ module "eks_blueprints" {
     #       namespace = "testing"
     #   }]
 
-      subnet_ids = module.vpc.private_subnets
-    }
+    #   subnet_ids = module.vpc.private_subnets
+    # }
   }
   
     # List of map_roles
@@ -331,7 +330,7 @@ data "aws_iam_policy_document" "opensearch_access_policy" {
 
 // access policy for fargate execution role 
 resource "aws_iam_policy" "fluentbit_opensearch_access" {
-  name        = "eks-fargate-logging-policy"
+  name        = "${local.name}-logging-policy"
   description = "IAM policy to allow Fluentbit access to OpenSearch"
   policy      = data.aws_iam_policy_document.fluentbit_opensearch_access.json
 }

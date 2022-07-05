@@ -15,10 +15,10 @@ data:
     [OUTPUT]
       Name  es
       Match *
-      Host  search-opensearch-demo-rqhhrcrsm57brgpnxstbzyogpa.us-east-1.es.amazonaws.com
+      Host  <your opensearch domain>
       Port  443
       AWS_Auth On
-      AWS_Region us-east-1
+      AWS_Region  <your region>
       tls On
       Index fargate_log
       Type  _doc
