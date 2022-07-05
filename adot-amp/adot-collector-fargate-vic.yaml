@@ -4,7 +4,7 @@ metadata:
   name: adot-collector
   namespace: default
   annotations:
-    eks.amazonaws.com/role-arn: arn:aws:iam::349361870252:role/aws007-preprod-test-eks-default
+    eks.amazonaws.com/role-arn: arn:aws:iam::349361870252:role/aws007-preprod-test-eks-amp-ingest-irsa
 ---
 apiVersion: v1
 kind: ConfigMap

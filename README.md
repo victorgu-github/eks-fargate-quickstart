@@ -22,18 +22,6 @@ Repo structure:
 
 - adot-amp includs a yaml file to deploy adot agents in fargate and a yaml file for deploying an application for testing
 
-# other components
-- adot-amp shows how to use adot on fargate and send metrics to AMP
-   use tf to create AMP and AMPingest role
-   update endpoint and region and deploy adot-collector-fargate.yaml
-   deploy sample go app  https://github.com/aws-observability/aws-otel-community/tree/master/sample-apps/prometheus-sample-app
-   add new grafana dashboard https://aws-observability.github.io/aws-o11y-recipes/recipes/fargate-eks-metrics-go-adot-ampamg/prometheus-sample-app-dashboard.json
-
-
-- logging shows turning on built in fluentbit in fargate and test-app
-   install opensearch by tf. also set access policy and attach to fargate profile execution role
-   update opensearch endpoint and AWS_Region in fargate-cm.yaml and deploy
-   deploy test app
    
 ## supported regions for AMP
 Europe (Stockholm)
@@ -96,7 +84,7 @@ kube-system   coredns-dcc8d4c97-2jvfb   1/1     Running   0          2m28s
 
 3. Configure and test your monitor components
 - Go to directory <your repo directory>/adot-amp,replace <your eks cluster amp-ingest-irsa role>, <your amp remote write endpoint> and <your region> in adot-collector-fargate.yaml with your setup values. then run  kubectl apply -f adot-collector-fargate.yaml
-    a. <your eks cluster amp-ingest-irsa role> can be found in AWS IAM, go to Roles section, searhc mp-ingest-irsa and go to the one startin with your cluster name. copy ARN of that role.
+    a. <your eks cluster amp-ingest-irsa role> can be found in AWS IAM, go to Roles section, searhc amp-ingest-irsa and go to the one startin with your cluster name. copy ARN of that role.
     b. <your amp remote write endpoint> can be found in Amazon Opensearch service, go to opensearch-demo domain and copy Domain endpoint 
 - Deploy a test app by running kubectl apply -f prometheus-sample-app.yaml
     
