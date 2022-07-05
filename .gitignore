@@ -1,0 +1,5 @@
+eks-fargate-quickstart/terraform.tfstate
+eks-fargate-quickstart/.terraform/
+eks-fargate-quickstart/.terraform.lock.hcl
+eks-fargate-quickstart/terraform.tfstate.backup
+eks-fargate-quickstart/terraform.tfstate
