@@ -49,9 +49,9 @@ Ensure that you have the following tools installed locally:
 1. Go to directory <your repo directory>/eks-fargate-quickstart
 
 ```sh
-terraform init
-terraform plan
-terraform apply
+terraform init 
+terraform plan -var-file base.tfvars
+terraform apply -var-file base.tfvars
 ```
 
 Enter `yes` at command prompt to apply

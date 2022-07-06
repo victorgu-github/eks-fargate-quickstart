@@ -32,11 +32,10 @@ data "aws_caller_identity" "current" {}
 data "aws_availability_zones" "available" {}
 
 locals {
-  name   = "aws007-preprod-test-eks"
-  region = "us-east-2"
 
-  vpc_cidr = "10.0.0.0/16"
-  
+  name = var.name
+  region = var.region
+  vpc_cidr = var.vpc_cidr
   
   azs  = data.aws_availability_zones.available.names
   
