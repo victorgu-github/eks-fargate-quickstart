@@ -190,16 +190,11 @@ module "eks_blueprints_kubernetes_addons" {
   argocd_manage_add_ons = true # Indicates that ArgoCD is responsible for managing/deploying Add-ons.
   argocd_applications = {
     addons    = local.addon_application
-    #workloads = local.workload_application
+    #workloads = local.workload_application # for deploying your own applications
   }
   
   # enable_aws_load_balancer_controller = true
-  
-  # Prometheus and Amazon Managed Prometheus integration
-  #enable_prometheus                    = true
-  #enable_amazon_prometheus             = true
-  #amazon_prometheus_workspace_endpoint = module.managed_prometheus.workspace_prometheus_endpoint
-  
+
 
   tags = local.tags
 
@@ -267,7 +262,7 @@ resource "null_resource" "modify_kube_dns" {
   ]
 }
 
-
+# provision openseach service
 resource "aws_elasticsearch_domain" "opensearch" {
   domain_name           = "opensearch-demo"
   elasticsearch_version = "OpenSearch_1.2"
