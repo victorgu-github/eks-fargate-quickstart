@@ -1,6 +1,0 @@
-karpenter:
-  serviceAccount:
-    create: false
-  nodeSelector:
-    kubernetes.io/os: linux
-  aws:
